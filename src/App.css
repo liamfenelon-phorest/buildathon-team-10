@@ -90,6 +90,39 @@
   pointer-events: none;
 }
 
+/* ───────────────────────── Loading splash ───────────────────────── */
+.splash {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background: linear-gradient(160deg, #7a45a0 0%, #643582 45%, #3d1f52 100%);
+}
+.splash__pulse {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--brand-yellow);
+  animation: splash-pulse 1.3s ease-in-out infinite;
+}
+.splash__text {
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.85);
+}
+@keyframes splash-pulse {
+  0%,
+  100% {
+    transform: scale(0.7);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* ───────────────────────── Slide shell ───────────────────────── */
 .slide {
   position: absolute;
@@ -159,18 +192,19 @@
 .intro__year {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.6rem, 14vw, 4rem);
+  font-size: clamp(1.8rem, 9vw, 2.8rem);
   color: var(--brand-yellow);
-  line-height: 1;
+  line-height: 1.05;
   margin-top: 4px;
+  white-space: nowrap;
 }
 .intro__wrapped {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3.6rem, 21vw, 6rem);
-  letter-spacing: 0.04em;
+  font-size: clamp(2.4rem, 13.5vw, 4.2rem);
+  letter-spacing: 0.01em;
   line-height: 0.92;
-  margin-top: -6px;
+  margin-top: -4px;
 }
 .intro__hello {
   font-size: 1.05rem;
@@ -208,9 +242,10 @@
 .stat__value {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(3.6rem, 23vw, 6.4rem);
+  font-size: clamp(2.8rem, 18vw, 5.4rem);
   line-height: 0.98;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  max-width: 100%;
 }
 .stat__headline {
   font-size: clamp(1.2rem, 5.5vw, 1.6rem);

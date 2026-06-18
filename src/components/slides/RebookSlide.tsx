@@ -12,6 +12,15 @@ export function RebookSlide({ data, theme, active, reducedMotion }: SlideProps) 
   const target = CIRC * (1 - rebookedRate / 100);
   const diff = rebookedRate - salonRebookAvg;
 
+  const headline =
+    diff > 0
+      ? `${diff} points above your salon average`
+      : "Every rebook keeps your column full";
+  const caption =
+    diff > 0
+      ? `Salon average is ${salonRebookAvg}%. That loyalty? That's all you. 💜`
+      : "Every client you bring back builds your future. 💜";
+
   return (
     <SlideShell theme={theme} reducedMotion={reducedMotion}>
       <motion.p className="stat__kicker" variants={riseIn}>
@@ -62,7 +71,7 @@ export function RebookSlide({ data, theme, active, reducedMotion }: SlideProps) 
       </motion.div>
 
       <motion.h2 className="stat__headline" variants={riseIn}>
-        {diff} points above your salon average
+        {headline}
       </motion.h2>
 
       <motion.p
@@ -70,7 +79,7 @@ export function RebookSlide({ data, theme, active, reducedMotion }: SlideProps) 
         variants={riseIn}
         style={{ color: theme.muted }}
       >
-        Salon average is {salonRebookAvg}%. That loyalty? That's all you. 💜
+        {caption}
       </motion.p>
     </SlideShell>
   );

@@ -9,17 +9,19 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { slides } from "./slides";
 import { ProgressBars } from "./ProgressBars";
 import { slideTransition } from "./motion";
-import { wrapped } from "../data/wrapped";
+import type { StaffWrapped } from "../data/wrapped";
 import type { SlideDef } from "./types";
 
 /** Memoised so per-frame progress ticks don't re-render the slide subtree. */
 const Slide = memo(function Slide({
   def,
+  data,
   active,
   reducedMotion,
   onReplay,
 }: {
   def: SlideDef;
+  data: StaffWrapped;
   active: boolean;
   reducedMotion: boolean;
   onReplay: () => void;
@@ -27,7 +29,7 @@ const Slide = memo(function Slide({
   const { Component } = def;
   return (
     <Component
-      data={wrapped}
+      data={data}
       theme={def.theme}
       active={active}
       reducedMotion={reducedMotion}
@@ -38,7 +40,7 @@ const Slide = memo(function Slide({
 
 const HOLD_MS = 180;
 
-export function StoryPlayer() {
+export function StoryPlayer({ data }: { data: StaffWrapped }) {
   const reduced = useReducedMotion() ?? false;
   // Optional deep-link (?s=N) to start on a given slide — handy for sharing/QA.
   const startIndex = (() => {
@@ -47,7 +49,9 @@ export function StoryPlayer() {
   })();
   const [index, setIndex] = useState(startIndex);
   const [progress, setProgress] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(
+    new URLSearchParams(window.location.search).get("paused") === "1"
+  );
 
   const isLast = index === slides.length - 1;
 
@@ -177,6 +181,7 @@ export function StoryPlayer() {
           >
             <Slide
               def={slides[index]}
+              data={data}
               active
               reducedMotion={reduced}
               onReplay={replay}

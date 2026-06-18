@@ -83,7 +83,7 @@ export const slides: SlideDef[] = [
         value={p.data.metrics.clientVisits}
         suffix=""
         headline="clients through your chair"
-        caption="That's about 24 happy faces every single week. 🌿"
+        caption="Every one of them, looked after by you. 🌿"
         glyph="👀"
       />
     ),
@@ -146,8 +146,8 @@ export const slides: SlideDef[] = [
         kicker="Clients tipped you"
         value={p.data.metrics.tips}
         prefix={p.data.currency}
-        headline="in tips this year"
-        caption="A little thank-you, over a thousand times over. 💛"
+        headline="in tips"
+        caption="A little thank-you that really adds up. 💛"
         glyph="💛"
       />
     ),
