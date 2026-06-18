@@ -12,10 +12,58 @@ npm install
 npm run dev      # http://localhost:5173
 ```
 
+`npm run dev` automatically loads `.env.local` (gitignored). With a valid token
+in there the slides show **live month-to-date data**; without it they fall back
+to the hardcoded demo persona.
+
 ```bash
 npm run build    # type-check + production bundle in dist/
 npm run preview  # serve the production build
 ```
+
+## Live data
+
+The slides are driven by the api-facade `staffPerformance` GraphQL query
+(`MONTH_TO_DATE` by default), mapped into the `StaffWrapped` shape in
+`src/data/fetchWrapped.ts`.
+
+Configure via `.env.local` (copy `.env.example`):
+
+```bash
+VITE_WRAPPED_TOKEN=<bearer token>        # dev tokens last ~30 min
+VITE_WRAPPED_BUSINESS_ID=<business_id>   # from the token payload
+VITE_WRAPPED_USER_ID=<user_id>           # from the token payload
+# VITE_WRAPPED_STAFF_ID=<staff_id>       # optional: a specific stylist
+# VITE_WRAPPED_PRESET=MONTH_TO_DATE      # TODAY | WEEK_TO_DATE | MONTH_TO_DATE | YEAR_TO_DATE
+```
+
+The browser calls the relative `/api-facade/graphql`, which the Vite dev server
+**proxies** to `https://api-gateway-dev.phorest.com` (see `vite.config.ts`) —
+so there's no CORS, and the required `Authorization` + `x-memento-security-context`
+headers are added in `fetchWrapped.ts`.
+
+**Mapping** (`staffPerformance` → slide):
+
+| Slide | GraphQL field |
+| --- | --- |
+| Client visits | `clientVisitsStats.totalCount` |
+| Service sales | `serviceAndCoursesRevenueStats.total.totalAmount.amount` |
+| Retail sales | `retailRevenueStats.total.totalAmount.amount` |
+| Average bill | `averageRevenueStats.totalAmount.amount` |
+| Tips | `tipAmount.amount` |
+| Rebooked | `rebookStats.totalPercentage` |
+| Currency | `defaultCurrency` (mapped to a symbol) |
+| Period label | derived from `startDate` |
+
+Notes:
+- The API returns numbers as **strings**, and `"-"` when there's no data — both
+  are parsed to `0`.
+- `salonRebookAvg` and `topPercentile` are **not** exposed by `staffPerformance`;
+  they stay as configurable demo values (fall back from `wrapped.ts`).
+- Staff/salon **names** aren't in this query either — set
+  `VITE_WRAPPED_STAFF_NAME` / `VITE_WRAPPED_SALON_NAME`, or leave the demo defaults.
+- Dev tokens are short-lived (~30 min). On `401`s, refresh `VITE_WRAPPED_TOKEN`;
+  the dev server restarts automatically when `.env.local` changes.
 
 ## The experience
 
