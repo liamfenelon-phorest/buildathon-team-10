@@ -97,8 +97,12 @@ Respects `prefers-reduced-motion` (instant counts, no confetti, static blobs).
 
 ## Where things live
 
-- `src/data/wrapped.ts` – **all hardcoded data** (staff, salon, metrics).
-  Numbers are internally consistent: `(service + retail) / visits ≈ average bill`.
+- `src/data/fetchWrapped.ts` – **live data loader**: the `staffPerformance`
+  query, env config, response → `StaffWrapped` mapping, and fallback handling.
+- `src/data/wrapped.ts` – the **hardcoded fallback persona** + `StaffWrapped`
+  type. Numbers are internally consistent: `(service + retail) / visits ≈ average bill`.
+- `vite.config.ts` – dev proxy for `/api-facade` → dev gateway (no CORS).
+- `src/App.tsx` – async load, loading splash, fallback wiring.
 - `src/components/slides/index.tsx` – slide registry + per-slide colour themes.
 - `src/components/StoryPlayer.tsx` – navigation, auto-advance, progress, gestures.
 - `src/components/AnimatedNumber.tsx` – count-up via a Framer `MotionValue`.
@@ -112,7 +116,7 @@ Vite · React · TypeScript · Framer Motion · canvas-confetti.
 
 ## Notes
 
-- Data is hardcoded for now; swapping in a real per-staff feed is a matter of
-  replacing the `wrapped` export (and, later, fetching by staff id).
+- For production you'd move the token off the client (a thin server-side proxy
+  that injects auth), rather than relying on the dev proxy + `VITE_*` env.
 - The brand colours mirror Phorest's existing design tokens so it sits visually
   alongside the rest of the product.
